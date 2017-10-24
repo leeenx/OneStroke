@@ -1,0 +1,152 @@
+html, body {
+	margin: 0; 
+	padding: 0; 
+}
+
+.wrapper {
+	position: relative; 
+	max-width: 540px;
+	margin: 0 auto; 
+}
+
+.wrapper canvas {
+	display: block; 
+	width: 100%; 
+	height: auto; 
+}
+
+.levels {
+	position: absolute; 
+	width: 100%; 
+	height: 100vh; 
+	top: 0;
+	left: 0; 
+	list-style: none; 
+	padding: 0; 
+	margin: 0;
+	overflow-x: hidden;
+	overflow-y: auto; 
+	-webkit-overflow-scrolling:touch; 
+	transition: transform .6s ease; 
+}
+
+.level { 
+	position: relative; 
+	width: 100%; 
+	height: 60px; 
+	box-sizing: border-box; 
+	padding: 20px 10px 0; 
+	display: flex; 
+	align-items: center; 
+	box-align: center; 
+}
+
+.level::after {
+	content: ''; 
+	position: absolute; 
+	right: 0;
+	bottom: 0; 
+	left: 70px; 
+	height: 1px; 
+	background-color: #ccc; 
+}
+
+.level-no {
+	width: 50px; 
+	height: 40px; 
+	line-height: 40px; 
+	text-align: center; 
+	color: #fff; 
+	background-color: #e11222;
+}
+
+.level-arrow {
+	width: 10px; 
+	height: 10px; 
+	border-width: 2px 2px 0 0; 
+	border-style: solid; 
+	border-color: #ccc; 
+	margin: 0 10px; 
+	transform: rotate(45deg);
+}
+
+.level-name {
+	flex: 1; 
+	margin-left: 10px;
+}
+
+.game {
+	position: absolute; 
+	top: 0; 
+	left: 100%; 
+	width: 100%; 
+	height: 100vh; 
+	overflow: hidden; 
+	transition: transform .6s ease; 
+}
+
+.game-back {
+	position: absolute; 
+	z-index: 1; 
+	top: 0; 
+	left: 0; 
+	width: 100%; 
+	height: 40px; 
+	line-height: 40px; 
+	text-align: center; 
+	background-color: #efefef; 
+	box-shadow: 0 0px 10px rgba(0, 0, 0, .2); 
+}
+
+.game-back::before {
+	content: ''; 
+	position: absolute; 
+	width: 100%; 
+	height: 1px; 
+	background-color: #ccc; 
+	bottom: 0; 
+	left: 0; 
+}
+
+.game-back::after {
+	content: ''; 
+	position: absolute; 
+	width: 10px; 
+	height: 10px; 
+	border-width: 2px 0 0 2px; 
+	border-style: solid; 
+	border-color: #ccc; 
+	top: 12px; 
+	left: 10px; 
+	transform: rotate(315deg);
+}
+
+.easel {
+	position: relative; 
+	width: 100%; 
+}
+.game-control {
+	position: absolute; 
+	z-index: 1; 
+	bottom: 0; 
+	left: 0; 
+	width: 100%; 
+	height: 40px; 
+	line-height: 40px; 
+	text-align: center; 
+	background-color: #efefef; 
+	box-shadow: 0 0px 10px rgba(0, 0, 0, .2); 
+	display: flex; 
+}
+
+.game-control-reset, .game-control-rollback {
+	flex: 1; 
+}
+
+.game-control-rollback
+{
+	color: #e11222; 
+}
+
+
+

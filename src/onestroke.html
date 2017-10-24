@@ -1,0 +1,147 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>H5小游戏100例: 一笔画</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no" />
+  <link href="css/onstroke.css" rel="stylesheet">
+</head>
+
+<body>
+	<div class="wrapper">
+		<!-- 关卡列表 -->
+		<ul class="levels" id="levels">
+			<!-- <li class="level">
+				<span class="level-no">001</span>
+				<span class="level-name">第一关</span>
+				<div class="level-arrow"></div>
+			</li> -->
+		</ul>
+		<div class="game" id="game">
+			<div class="game-back" id="gameBack"></div>
+			<canvas id="easel" width="375" height="603" class="easel"></canvas>
+			<div class="game-control">
+				<div class="game-control-reset">重新开始</div>
+				<div class="game-control-rollback">回退</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="script/lib/pixi.js"></script>
+<script type="text/javascript" src="script/lib/gsap/TweenMax.js"></script>
+<script type="text/javascript" src="script/onestroke.js"></script>
+<script type="text/javascript">
+let onestroke = new OneStroke(
+	{
+		// 默认的线段颜色与端点颜色
+		lineColor: 0xe2e2e2, 
+		vertexColor: 0x6dc6c0, 
+		strokeColor: 0x416275, 
+		activeVertexColor: 0x6dc6c0, 
+		levels: [
+			{
+				name: "第一关", 
+				lineColor: 0xe2e2e2, 
+				vertexColor: 0x90b34f, 
+				strokeColor: 0x445624, 
+				activeVertexColor: 0x90b34f, 
+				lines: [
+					{"x1": 375, "y1": 366, "x2": 200, "y2": 916},
+					{"x1": 200, "y1": 916, "x2": 664, "y2": 576}, 
+					{"x1": 664, "y1": 576, "x2": 88, "y2": 576}, 
+					{"x1": 88, "y1": 576, "x2": 556, "y2": 916}, 
+					{"x1": 556, "y1": 916, "x2": 375, "y2": 366}
+				]
+			}, 
+			{
+				name: "第二关", 
+				lineColor: 0xe2e2e2, 
+				vertexColor: 0x6dc6c0, 
+				strokeColor: 0x416275, 
+				activeVertexColor: 0x6dc6c0, 
+				lines: [
+					{"x1": 240, "y1": 460, "x2": 654, "y2": 875},
+					{"x1": 654, "y1": 875, "x2": 100, "y2": 740}, 
+					{"x1": 100, "y1": 740, "x2": 240, "y2": 460}, 
+					{"x1": 240, "y1": 460, "x2": 515, "y2": 460}, 
+					{"x1": 515, "y1": 460, "x2": 654, "y2": 740}, 
+					{"x1": 654, "y1": 740, "x2": 100, "y2": 875}, 
+					{"x1": 100, "y1": 875, "x2": 515, "y2": 460}
+				]
+			}, 
+			{
+				name: "第三关", 
+				lineColor: 0xe2e2e2, 
+				vertexColor: 0xec6a74, 
+				strokeColor: 0x914748, 
+				activeVertexColor: 0xec6a74, 
+				lines: [
+					{"x1": 177, "y1": 367, "x2": 177, "y2": 961}, 
+					{"x1": 177, "y1": 961, "x2": 673, "y2": 861}, 
+					{"x1": 673, "y1": 861, "x2": 177, "y2": 367}, 
+					{"x1": 177, "y1": 367, "x2": 572, "y2": 367}, 
+					{"x1": 572, "y1": 367, "x2": 78, "y2": 861}, 
+					{"x1": 78, "y1": 861, "x2": 572, "y2": 961}, 
+					{"x1": 572, "y1": 961, "x2": 572, "y2": 367}
+				]
+			}
+		]
+	}
+); 
+
+// 通关
+onestroke.event.on("pass", () => {
+	console.log("通关"); 
+	// 进入下一关
+	onestroke.next(); 
+}); 
+
+// 进入新的一关
+onestroke.event.on("start", curLevel => {
+	gameBack.innerHTML = curLevel.name; 
+})
+
+// gameover
+onestroke.event.on("gameover", () => {
+	alert("GAMEOVER"); 
+})
+
+// showOneStroke
+let showOneStroke = () => {
+	levels.style.transform = game.style.transform = "translate(-100%, 0)"; 
+}
+
+// hideOneStroke
+let hideOneStroke = () => {
+	levels.style.transform = game.style.transform = "translate(0, 0)"; 
+}
+
+// 进入对应的关卡
+let enter = index => { 
+	showOneStroke(); 
+	onestroke.enter(index); 
+}
+
+// 关卡列表初始化
+let initLevels = () => { 
+	let str = ''; 
+	onestroke.config.levels.forEach(
+		(level, index) => str += `
+			<li class="level" onclick="enter(${index})">
+				<span class="level-no">${index + 1}</span>
+				<span class="level-name">${level.name}</span>
+				<div class="level-arrow"></div>
+			</li>`
+	); 
+	levels.innerHTML = str; 
+	// 返回事件
+	gameBack.addEventListener("click", () => hideOneStroke()); 
+	// 重新开始
+	document.querySelector(".game-control-reset").addEventListener("click", () => onestroke.restart()); 
+	// 回退
+	document.querySelector(".game-control-rollback").addEventListener("click", () => onestroke.rollback()); 
+}
+// 调用初始化列表 
+initLevels(); 
+</script>
+</html>
