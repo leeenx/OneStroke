@@ -456,8 +456,8 @@ class OneStroke {
 			// 跳过已连结的端点
 			if(connected === true) continue; 
 			let distance = Math.sqrt(Math.pow(x - x0, 2) + Math.pow(y - y0, 2)); 
-			// 手指在半径内
-			if(distance <= this.vertexRadius) { 
+			// 手指在半径内 ------ 移动端适当把半径放大
+			if(distance <= this.vertexRadius * 1.5) { 
 				return this.validCoords[i]; 
 			}
 		}
