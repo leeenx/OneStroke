@@ -8482,9 +8482,11 @@ var OneStroke = function () {
 					// 设置中心点
 					var _stroke$getBounds = stroke.getBounds(),
 					    width = _stroke$getBounds.width,
-					    height = _stroke$getBounds.height;
+					    height = _stroke$getBounds.height,
+					    left = _stroke$getBounds.left,
+					    top = _stroke$getBounds.top;
 
-					stroke.set({ pivotX: width / 2, pivotY: height / 2, x: stroke.x + width / 2, y: stroke.y + height / 2 });
+					stroke.set({ pivotX: left + width / 2, pivotY: top + height / 2, x: stroke.x + left + width / 2, y: stroke.y + top + height / 2 });
 					TweenMax.to(stroke, Math.random() * .8 + 1.5, {
 						delay: Math.random() * .5,
 						rotation: Math.PI,

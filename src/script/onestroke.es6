@@ -550,8 +550,8 @@ class OneStroke {
 		let promises = this.strokes.map(stroke => new Promise(
 			(resolve, reject) => { 
 				// 设置中心点
-				let {width, height} = stroke.getBounds(); 
-				stroke.set({pivotX: width / 2, pivotY: height / 2, x: stroke.x + width / 2, y: stroke.y + height / 2}); 
+				let {width, height, left, top} = stroke.getBounds(); 
+				stroke.set({pivotX: left + width / 2, pivotY: top + height / 2, x: stroke.x + left + width / 2, y: stroke.y + top + height / 2}); 
 				TweenMax.to(stroke, Math.random() * .8 + 1.5, { 
 						delay: Math.random() * .5, 
 						rotation: Math.PI, 
