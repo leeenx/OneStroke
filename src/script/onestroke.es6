@@ -161,6 +161,8 @@ class OneStroke {
 		this.strokedSnap = {}; 
 		// 清空手绘线
 		this.strokes.length = 0; 
+		// 清空回收站
+		this.recycler.length = 0; 
 		// 清空动画
 		TweenMax.killAll(); 
 		// 解除锁定
