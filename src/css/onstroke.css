@@ -7,6 +7,8 @@ html, body {
 	position: relative; 
 	max-width: 540px;
 	margin: 0 auto; 
+	height: 100vh; 
+	overflow: hidden; 
 }
 
 .wrapper canvas {
