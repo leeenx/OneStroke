@@ -86,6 +86,9 @@ class OneStroke {
 		// 当前的有效点
 		this.validCoords = []; 
 
+		//  当前屏幕width 与 ip6.width 的比例
+		this.ratio = 375 / document.body.clientWidth; 
+
 		// 当前手指信息
 		this.finger = {}; 
 
@@ -191,10 +194,12 @@ class OneStroke {
 		// 激活点的颜色
 		this.activeVertexColor = curLevel.activeVertexColor || this.activeVertexColor; 
 
+		// PIXI 的分辨率
+		let resolution = this.renderer.resolution; 
+
 		// 收集当前端点 
 		this.lines.forEach((item) => { 
-			// 坐标除以分辨率
-			["x1", "y1", "x2", "y2"].forEach((key) => item[key] = item[key] / 2); 
+			["x1", "y1", "x2", "y2"].forEach((key) => item[key] = item[key] / resolution); 
 			let {x1, y1, x2, y2} = item; 
 			this.addCoords({x: x1, y: y1}, {x: x2, y: y2}); 
 		}); 
@@ -264,6 +269,8 @@ class OneStroke {
 	touchstartHandle(e) { 
 		if(this.lock === true) return ;
 		let {pageX: x, pageY: y} = e.targetTouches[0]; 
+		x *= this.ratio; 
+		y *= this.ratio; 
 		this.finger.x = x, this.finger.y = y; 
 		// 表示图形画了一半，继续画
 		if(this.curStroke !== null) { 
@@ -289,6 +296,8 @@ class OneStroke {
 		// 不能画线
 		if(this.canStroke === false || this.lock === true) return ;
 		let {pageX: x, pageY: y} = e.targetTouches[0]; 
+		x *= this.ratio; 
+		y *= this.ratio; 
 		this.updateLine(x, y); 
 	}
 	// touchend

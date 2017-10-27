@@ -7856,6 +7856,9 @@ var OneStroke = function () {
 		// 当前的有效点
 		this.validCoords = [];
 
+		//  当前屏幕width 与 ip6.width 的比例
+		this.ratio = 375 / document.body.clientWidth;
+
 		// 当前手指信息
 		this.finger = {};
 
@@ -7991,11 +7994,13 @@ var OneStroke = function () {
 			// 激活点的颜色
 			this.activeVertexColor = curLevel.activeVertexColor || this.activeVertexColor;
 
+			// PIXI 的分辨率
+			var resolution = this.renderer.resolution;
+
 			// 收集当前端点 
 			this.lines.forEach(function (item) {
-				// 坐标除以分辨率
 				["x1", "y1", "x2", "y2"].forEach(function (key) {
-					return item[key] = item[key] / 2;
+					return item[key] = item[key] / resolution;
 				});
 				var x1 = item.x1,
 				    y1 = item.y1,
@@ -8096,6 +8101,8 @@ var OneStroke = function () {
 			    x = _e$targetTouches$.pageX,
 			    y = _e$targetTouches$.pageY;
 
+			x *= this.ratio;
+			y *= this.ratio;
 			this.finger.x = x, this.finger.y = y;
 			// 表示图形画了一半，继续画
 			if (this.curStroke !== null) {
@@ -8127,6 +8134,8 @@ var OneStroke = function () {
 			    x = _e$targetTouches$2.pageX,
 			    y = _e$targetTouches$2.pageY;
 
+			x *= this.ratio;
+			y *= this.ratio;
 			this.updateLine(x, y);
 		}
 		// touchend
