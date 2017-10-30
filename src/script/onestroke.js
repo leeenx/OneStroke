@@ -8172,9 +8172,7 @@ var OneStrokePlugin = function () {
 	return OneStrokePlugin;
 }();
 
-var plugin = new OneStrokePlugin();
-
-exports.default = plugin;
+exports.default = OneStrokePlugin;
 
 },{}],329:[function(require,module,exports){
 'use strict';
@@ -8294,6 +8292,9 @@ var OneStroke = function () {
 
 		// 当前手指信息
 		this.finger = {};
+
+		// 实例插件
+		this.plugin = new _oneStrokePlugin2.default();
 
 		// 事件绑定 
 		this.event = new _Events2.default();
@@ -8417,7 +8418,7 @@ var OneStroke = function () {
 				// 通知外部关卡载入中
 				this.event.dispatch("level-loading");
 				var name = curLevel.name;
-				_oneStrokePlugin2.default.parse(curLevel.src).then(function (curLevel) {
+				this.plugin.parse(curLevel.src).then(function (curLevel) {
 					curLevel.name = name;
 					_this.event.dispatch("level-loaded");
 					_this.drawLevel(index, curLevel);

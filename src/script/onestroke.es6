@@ -5,7 +5,7 @@ import 'babel-polyfill';
 import './lib/utils.es6'; 
 
 // 识图插件
-import plugin from './oneStrokePlugin.es6'; 
+import oneStrokePlugin from './oneStrokePlugin.es6'; 
 
 // 事件
 import Events from './lib/Events'; 
@@ -94,6 +94,9 @@ class OneStroke {
 
 		// 当前手指信息
 		this.finger = {}; 
+
+		// 实例插件
+		this.plugin = new oneStrokePlugin(); 
 
 		// 事件绑定 
 		this.event = new Events(); 
@@ -187,7 +190,7 @@ class OneStroke {
 			// 通知外部关卡载入中
 			this.event.dispatch("level-loading"); 
 			let name = curLevel.name; 
-			plugin.parse(curLevel.src)
+			this.plugin.parse(curLevel.src)
 				.then(curLevel => { 
 					curLevel.name = name; 
 					this.event.dispatch("level-loaded"); 

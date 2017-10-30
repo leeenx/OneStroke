@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>OneStrokePlugin</title>
+	<style type="text/css">
+		.generate-config {
+			display: block; 
+			width: 100px; 
+			border: 0 none; 
+			border-radius: 2px; 
+			background-color: #efefef; 
+			box-shadow: 0 0 10px rgba(0, 0, 0, .3); 
+			margin: 10px 0;
+		}
+		.add-file {
+			width: 80px; 
+			height: 80px; 
+			line-height: 80px; 
+			font-size: 48px; 
+			text-align: center; 
+			font-weight: bold; 
+			color: #d00000; 
+			box-shadow: 0 0 6px rgba(0, 0, 0, .1); 
+			margin-top: 10px;
+		}
+		.reduce-file {
+			width: 80px; 
+			font-size: 48px; 
+			height: 80px; 
+			line-height: 80px; 
+			text-align: center; 
+			font-weight: bold; 
+			color: #000000;
+			margin: -80px 0 20px 100px; 
+			box-shadow: 0 0 6px rgba(0, 0, 0, .1); 
+		}
+		.config-textarea {
+			border: 0 none; 
+			width: 500px; 
+			height: 300px; 
+			box-shadow: 0 0 6px rgba(0, 0, 0, .1); 
+			resize: none;
+		}
+	</style>
+</head>
+<body>
+	<div class="file-line">
+		<input type="file">
+	</div>
+	<div class="add-file">+</div>
+	<div class="reduce-file">-</div>
+	<button class="generate-config">生成配置</button>
+	<textarea class="config-textarea"></textarea>
+</body>
+<script type="text/javascript" src="script/plugin.js"></script>
+<script type="text/javascript">
+
+let plugin = new OneStrokePlugin(); 
+
+let generateConfig = function() {
+	let inputs = [...document.querySelectorAll(".file-line > input")]; 
+	let files = []; 
+	inputs.forEach(input => input.files.length && files.push(input.files[0])); 
+	let promises = []; 
+	for(let i = 0; i < files.length; ++i) {
+		promises.push(readAsDataUrl(files[i]))
+	}
+	Promise.all(promises)
+		.then(
+			reses => { 
+				let promises = reses.map(res => plugin.parse(res)); 
+				Promise.all(promises).then(
+					levels => {
+						let config = {
+							// 默认的线段颜色与端点颜色
+							lineColor: 0xe2e2e2, 
+							vertexColor: 0x6dc6c0, 
+							strokeColor: 0x416275, 
+							activeVertexColor: 0x6dc6c0
+						}
+						config.levels = levels.map( (level, index) => {
+							level.name = "第" + (index + 1) + "关"; 
+							return level; 
+						}); 
+						document.querySelector(".config-textarea").innerHTML = JSON.stringify(config); 
+					}
+				)
+			}
+		); 
+}
+
+// 添加文件
+document.querySelector(".add-file").addEventListener("click", function() {
+	let line = document.createElement("div"); 
+	line.className = 'file-line'; 
+	line.innerHTML = '<input type="file">'; 
+	document.body.insertBefore(line, this); 
+})
+
+// 减少文件
+document.querySelector(".reduce-file").addEventListener("click", function() {
+	let lines = document.querySelectorAll(".file-line"); 
+	if(lines.length === 1) return; 
+	document.body.removeChild(lines[lines.length - 1]); 
+})
+
+// 转 DataUri
+let readAsDataUrl = (file) => {
+	return new Promise((resolve, reject) => {
+		let reader = new FileReader(); 
+		reader.readAsDataURL(file); 
+		reader.onload = (e) => resolve(e.target.result); 
+	}); 
+}
+
+document.querySelector(".generate-config").addEventListener("click", generateConfig); 
+</script>
+</html>

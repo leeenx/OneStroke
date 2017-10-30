@@ -2,14 +2,14 @@
 	@ 一笔画插件
 */
 
-class OneStrokePlugin {
+export default class OneStrokePlugin {
 	constructor() {
 		// 没什么事做 
 	}
 
 	// 图片转换成对应格式
 	parse(img, name) { 
-		return new Promise((resolve, reject) => {
+		return new Promise((resolve, reject) => { 
 			this.name = name; 
 			// 字符串
 			if(typeof(img) === "string") {
@@ -17,15 +17,13 @@ class OneStrokePlugin {
 				img = new Image(); 
 				img.crossOrigin = "*"; 
 				img.src = src; 
-				// 用文件名作为关卡名
-				if(this.name === undefined) this.name = src.replace(/(.*\/)?([0-9a-z\_]+)\.\w+$/i, "$2"); 
 			}
 			// 图片对象
 			if(img instanceof Image === true) { 
 				// 已经加载完成
 				if(img.complete === true) resolve(this.scan(img)); 
 				// 未加载完成等待
-				else {
+				else { 
 					img.onload = () => resolve(this.scan(img)); 
 					img.onerror = (err) => reject(err); 
 				}
@@ -300,8 +298,7 @@ class OneStrokePlugin {
 	  // 手绘线的颜色取端点的半色值
 	  let strokeColor = vertexColor[0] * Math.pow(256, 2) / 2 + vertexColor[1] * Math.pow(256, 1) / 2 + vertexColor[2] / 2; 
 
-	  return {
-	  		name: this.name, 
+	  return { 
 			lineColor: baseLineColor, 
 			vertexColor: baseVertexColor, 
 			strokeColor: strokeColor, 
@@ -311,7 +308,4 @@ class OneStrokePlugin {
 	}
 }
 
-const plugin = new OneStrokePlugin(); 
-
-export default plugin; 
 
