@@ -185,6 +185,9 @@ class OneStroke {
 
 		let curLevel = this.config.levels[index]; 
 
+		// 当前关卡数
+		this.curLevel = index; 
+
 		// 当前是图片路径
 		if(curLevel.lines === undefined && curLevel.src != undefined) { 
 			// 通知外部关卡载入中
@@ -194,19 +197,19 @@ class OneStroke {
 				.then(curLevel => { 
 					curLevel.name = name; 
 					this.event.dispatch("level-loaded"); 
-					this.drawLevel(index, curLevel); 
+					this.drawLevel(curLevel); 
 				})
 				.catch(err => console.log("图片载入失败"))
 		}
 		// 当前是关卡对象
 		else {
-			this.drawLevel(index, curLevel); 
+			this.drawLevel(curLevel); 
 		}	
 		
 	}
 
 	// 绘制当前关卡
-	drawLevel(index, curLevel) {
+	drawLevel(curLevel) {
 		// 当前线段 ---- 拷贝config中的信息
 		this.lines = curLevel.lines.map(item => { 
 			let newItem = Object.create(item); 
@@ -246,9 +249,6 @@ class OneStroke {
 
 		// 通知游戏开始
 		this.event.dispatch("start", curLevel); 
-
-		// 当前关卡数
-		this.curLevel = index; 
 	}
 
 	// 向 coords 添加端点
