@@ -4,6 +4,9 @@ import 'babel-polyfill';
 // PIXI 工具
 import './lib/utils.es6'; 
 
+// 识图插件
+import plugin from './oneStrokePlugin.es6'; 
+
 // 事件
 import Events from './lib/Events'; 
 
@@ -179,6 +182,28 @@ class OneStroke {
 
 		let curLevel = this.config.levels[index]; 
 
+		// 当前是图片路径
+		if(curLevel.lines === undefined && curLevel.src != undefined) { 
+			// 通知外部关卡载入中
+			this.event.dispatch("level-loading"); 
+			let name = curLevel.name; 
+			plugin.parse(curLevel.src)
+				.then(curLevel => { 
+					curLevel.name = name; 
+					this.event.dispatch("level-loaded"); 
+					this.drawLevel(index, curLevel); 
+				})
+				.catch(err => console.log("图片载入失败"))
+		}
+		// 当前是关卡对象
+		else {
+			this.drawLevel(index, curLevel); 
+		}	
+		
+	}
+
+	// 绘制当前关卡
+	drawLevel(index, curLevel) {
 		// 当前线段 ---- 拷贝config中的信息
 		this.lines = curLevel.lines.map(item => { 
 			let newItem = Object.create(item); 
@@ -575,6 +600,7 @@ class OneStroke {
 		Promise.race(promises).then(() => cb())
 	}
 }
+
 window.OneStroke = OneStroke; 
 // 屏蔽pixijs信息
 PIXI.utils.skipHello(); 

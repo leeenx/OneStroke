@@ -84,6 +84,22 @@ let onestroke = new OneStroke(
 					{"x1": 78, "y1": 861, "x2": 572, "y2": 961}, 
 					{"x1": 572, "y1": 961, "x2": 572, "y2": 367}
 				]
+			}, 
+			{
+				name: "第四关", 
+				src: "images/049.jpeg"
+			}, 
+			{
+				name: "第五关", 
+				src: "images/053.jpeg"
+			},
+			{
+				name: "第六关", 
+				src: "images/059.jpeg"
+			}, 
+			{
+				name: "第七关", 
+				src: "images/401.jpeg"
 			}
 		]
 	}
@@ -99,12 +115,21 @@ onestroke.event.on("pass", () => {
 // 进入新的一关
 onestroke.event.on("start", curLevel => {
 	gameBack.innerHTML = curLevel.name; 
-})
+}); 
 
 // gameover
 onestroke.event.on("gameover", () => {
 	alert("GAMEOVER"); 
-})
+}); 
+
+// 关卡加载中
+onestroke.event.on("level-loading", () => {
+	console.log("关卡" + onestroke.curLevel + " 加载中...")
+}); 
+
+onestroke.event.on("level-loaded", () => {
+	console.log("关卡" + onestroke.curLevel + " 加载成功")
+}); 
 
 // showOneStroke
 let showOneStroke = () => {
@@ -144,4 +169,7 @@ let initLevels = () => {
 // 调用初始化列表 
 initLevels(); 
 </script>
+
+
+
 </html>
