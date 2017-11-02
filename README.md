@@ -122,7 +122,8 @@ coords.forEach(coord => {
 ```
 But...有效连接点只能判断两个点是否为底图的线段，这只是一个静态的参考，在实际的「交互绘制」中，会遇到以下情况：
 
-![AB成线](http://7xv39r.com1.z0.glb.clouddn.com/2017-11-01-five.png)
+![AB成线](http://7xv39r.com1.z0.glb.clouddn.com/2017-11-01-five.png) 
+
 如上图，AB已串连成线段，当前选中点B的有效连接点是 A 与 C。AB 已经连接成线，如果 BA 也串连成线段，那么线段就重复了，所以此时 BA 不能成线，只有 AC 才能成线。
 
 对选中点而言，它的有效连接点有两种：
