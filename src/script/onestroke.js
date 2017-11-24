@@ -7788,8 +7788,6 @@ var OneStrokePlugin = function () {
 					img = new Image();
 					img.crossOrigin = "*";
 					img.src = src;
-					// 用文件名作为关卡名
-					if (_this.name === undefined) _this.name = src.replace(/(.*\/)?([0-9a-z\_]+)\.\w+$/i, "$2");
 				}
 				// 图片对象
 				if (img instanceof Image === true) {
@@ -8159,7 +8157,6 @@ var OneStrokePlugin = function () {
 			var strokeColor = vertexColor[0] * Math.pow(256, 2) / 2 + vertexColor[1] * Math.pow(256, 1) / 2 + vertexColor[2] / 2;
 
 			return {
-				name: this.name,
 				lineColor: baseLineColor,
 				vertexColor: baseVertexColor,
 				strokeColor: strokeColor,
@@ -8290,8 +8287,14 @@ var OneStroke = function () {
 		//  当前屏幕width 与 ip6.width 的比例
 		this.ratio = 375 / document.body.clientWidth;
 
+		// view 左边界距离视窗左边界的距离
+		this.viewLeft = 0;
+
 		// 当前手指信息
 		this.finger = {};
+
+		// 默认不可以绘制
+		this.canStroke = false;
 
 		// 实例插件
 		this.plugin = new _oneStrokePlugin2.default();
@@ -8305,6 +8308,21 @@ var OneStroke = function () {
 		this.touchendHandle = this.touchendHandle.bind(this);
 		this.touchcancelHandle = this.touchendHandle;
 
+		// 兼容非移动端
+		if ("ontouchstart" in document) {
+			this.touchstart = "touchstart";
+			this.touchmove = "touchmove";
+			this.touchend = "touchend";
+			this.touchcancel = "touchcancel";
+		}
+		// 没有 touch 事件
+		else {
+				this.touchstart = "mousedown";
+				this.touchmove = "mousemove";
+				this.touchend = "mouseup";
+				// 并没有 mousecancel
+				this.touchcancel = "mousecancle";
+			}
 		// 初始化
 		this.init();
 	}
@@ -8316,10 +8334,10 @@ var OneStroke = function () {
 		key: 'init',
 		value: function init() {
 			// 添加手指事件
-			this.view.addEventListener("touchstart", this.touchstartHandle);
-			this.view.addEventListener("touchmove", this.touchmoveHandle);
-			this.view.addEventListener("touchend", this.touchendHandle);
-			this.view.addEventListener("touchcancel", this.touchendHandle);
+			this.view.addEventListener(this.touchstart, this.touchstartHandle);
+			this.view.addEventListener(this.touchmove, this.touchmoveHandle);
+			this.view.addEventListener(this.touchend, this.touchendHandle);
+			this.view.addEventListener(this.touchcancel, this.touchendHandle);
 		}
 
 		// 开始游戏
@@ -8399,6 +8417,8 @@ var OneStroke = function () {
 			TweenMax.killAll();
 			// 解除锁定
 			this.lock = false;
+			// 默认不可以绘制
+			this.canStroke = false;
 		}
 
 		// 进入对应的关卡
@@ -8410,7 +8430,6 @@ var OneStroke = function () {
 
 			// 清空当前关卡的图形
 			this.clean();
-
 			var curLevel = this.config.levels[index];
 
 			// 当前是图片路径
@@ -8557,9 +8576,20 @@ var OneStroke = function () {
 		key: 'touchstartHandle',
 		value: function touchstartHandle(e) {
 			if (this.lock === true) return;
-			var _e$targetTouches$ = e.targetTouches[0],
-			    x = _e$targetTouches$.pageX,
-			    y = _e$targetTouches$.pageY;
+			// 移动端
+			if (this.touchstart === "touchstart") {
+				var _e$targetTouches$ = e.targetTouches[0],
+				    x = _e$targetTouches$.pageX,
+				    y = _e$targetTouches$.pageY;
+			}
+			// 非移动端
+			else {
+					var x = e.clientX,
+					    y = e.clientY;
+				}
+
+			// 修正 x
+			x -= this.viewLeft;
 
 			x *= this.ratio;
 			y *= this.ratio;
@@ -8567,6 +8597,7 @@ var OneStroke = function () {
 			// 表示图形画了一半，继续画
 			if (this.curStroke !== null) {
 				this.updateLine(x, y);
+				this.canStroke = true;
 			}
 			// 表示图形第一次绘制
 			else {
@@ -8590,9 +8621,19 @@ var OneStroke = function () {
 		value: function touchmoveHandle(e) {
 			// 不能画线
 			if (this.canStroke === false || this.lock === true) return;
-			var _e$targetTouches$2 = e.targetTouches[0],
-			    x = _e$targetTouches$2.pageX,
-			    y = _e$targetTouches$2.pageY;
+			// 移动端
+			if (this.touchstart === "touchstart") {
+				var _e$targetTouches$2 = e.targetTouches[0],
+				    x = _e$targetTouches$2.pageX,
+				    y = _e$targetTouches$2.pageY;
+			}
+			// 非移动端
+			else {
+					var x = e.clientX,
+					    y = e.clientY;
+				}
+			// 修正 x
+			x -= this.viewLeft;
 
 			x *= this.ratio;
 			y *= this.ratio;
@@ -8626,6 +8667,8 @@ var OneStroke = function () {
 					points[3] = points[1];
 					this.curStroke.dirty++ & this.curStroke.clearDirty++;
 				}
+			// 重置为不可绘制
+			this.canStroke = false;
 		}
 
 		// 找出坐标对应的有效连接点
