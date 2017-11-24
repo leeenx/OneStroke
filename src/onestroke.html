@@ -105,66 +105,76 @@ let onestroke = new OneStroke(
 	}
 ); 
 
+// 兼容大屏幕适配
+function fitEaselInfo() {
+	onestroke.viewLeft = document.querySelector(".wrapper").getBoundingClientRect().x; 
+	onestroke.ratio = 375 / Math.min(document.body.clientWidth, 540); 
+}
+window.addEventListener("resize", fitEaselInfo); 
+
+fitEaselInfo(); 
+
 // 通关
-onestroke.event.on("pass", () => {
+onestroke.event.on("pass", function() {
 	console.log("通关"); 
 	// 进入下一关
 	onestroke.next(); 
 }); 
 
 // 进入新的一关
-onestroke.event.on("start", curLevel => {
+onestroke.event.on("start", function(curLevel) {
 	gameBack.innerHTML = curLevel.name; 
 }); 
 
 // gameover
-onestroke.event.on("gameover", () => {
+onestroke.event.on("gameover", function() {
 	alert("GAMEOVER"); 
 }); 
 
 // 关卡加载中
-onestroke.event.on("level-loading", () => {
+onestroke.event.on("level-loading", function() {
 	console.log("关卡" + onestroke.curLevel + " 加载中...")
 }); 
 
-onestroke.event.on("level-loaded", () => {
+onestroke.event.on("level-loaded", function() {
 	console.log("关卡" + onestroke.curLevel + " 加载成功")
 }); 
 
 // showOneStroke
-let showOneStroke = () => {
+let showOneStroke = function() {
 	levels.style.transform = game.style.transform = "translate(-100%, 0)"; 
 }
 
 // hideOneStroke
-let hideOneStroke = () => {
+let hideOneStroke = function() {
 	levels.style.transform = game.style.transform = "translate(0, 0)"; 
 }
 
 // 进入对应的关卡
-let enter = index => { 
+let enter = function(index) { 
 	showOneStroke(); 
 	onestroke.enter(index); 
 }
 
 // 关卡列表初始化
-let initLevels = () => { 
+let initLevels = function() { 
 	let str = ''; 
 	onestroke.config.levels.forEach(
-		(level, index) => str += `
-			<li class="level" onclick="enter(${index})">
-				<span class="level-no">${index + 1}</span>
-				<span class="level-name">${level.name}</span>
-				<div class="level-arrow"></div>
-			</li>`
+		function(level, index) {
+			str += '<li class="level" onclick="enter(' + index + ')">\
+				<span class="level-no">' + (index + 1) + '</span>\
+				<span class="level-name">' + level.name + '</span>\
+				<div class="level-arrow"></div>\
+			</li>'
+		}
 	); 
 	levels.innerHTML = str; 
 	// 返回事件
-	gameBack.addEventListener("click", () => hideOneStroke()); 
+	gameBack.addEventListener("click", function() {hideOneStroke()}); 
 	// 重新开始
-	document.querySelector(".game-control-reset").addEventListener("click", () => onestroke.restart()); 
+	document.querySelector(".game-control-reset").addEventListener("click", function() {onestroke.restart()}); 
 	// 回退
-	document.querySelector(".game-control-rollback").addEventListener("click", () => onestroke.rollback()); 
+	document.querySelector(".game-control-rollback").addEventListener("click", function() { onestroke.rollback()}); 
 }
 // 调用初始化列表 
 initLevels(); 
