@@ -114,14 +114,14 @@ class OneStroke {
 		this.touchcancelHandle = this.touchendHandle; 
 
 		// 兼容非移动端
-		if("ontouchstart" in document) {
+		if("ontouchstart" in document) { 
 			this.touchstart = "touchstart"; 
 			this.touchmove = "touchmove"; 
 			this.touchend = "touchend"; 
 			this.touchcancel = "touchcancel"; 
 		}
 		// 没有 touch 事件
-		else {
+		else { 
 			this.touchstart = "mousedown"; 
 			this.touchmove = "mousemove"; 
 			this.touchend = "mouseup"; 
