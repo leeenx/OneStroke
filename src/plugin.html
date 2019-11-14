@@ -52,7 +52,7 @@
 	<button class="generate-config">生成配置</button>
 	<textarea class="config-textarea"></textarea>
 </body>
-<script type="text/javascript" src="script/plugin.js"></script>
+<script type="text/javascript" src="<%= htmlWebpackPlugin.files.chunks.plugin.entry %>"></script>
 <script type="text/javascript">
 
 let plugin = new OneStrokePlugin(); 
